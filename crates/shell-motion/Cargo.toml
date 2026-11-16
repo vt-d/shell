@@ -1,0 +1,5 @@
+[package]
+name = "shell-motion"
+description = "Spring physics for animation"
+version.workspace = true
+edition.workspace = true

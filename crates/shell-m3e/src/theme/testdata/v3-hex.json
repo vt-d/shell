@@ -1,0 +1,256 @@
+{
+  "mode": "dark",
+  "is_dark_mode": true,
+  "colors": {
+    "background": {
+      "dark": "#0f1416",
+      "default": "#0f1416",
+      "light": "#f5fafd"
+    },
+    "error": {
+      "dark": "#ffb4ab",
+      "default": "#ffb4ab",
+      "light": "#ba1a1a"
+    },
+    "error_container": {
+      "dark": "#93000a",
+      "default": "#93000a",
+      "light": "#ffdad6"
+    },
+    "inverse_on_surface": {
+      "dark": "#2c3134",
+      "default": "#2c3134",
+      "light": "#edf1f4"
+    },
+    "inverse_primary": {
+      "dark": "#05677e",
+      "default": "#05677e",
+      "light": "#87d1eb"
+    },
+    "inverse_surface": {
+      "dark": "#dee3e6",
+      "default": "#dee3e6",
+      "light": "#2c3134"
+    },
+    "on_background": {
+      "dark": "#dee3e6",
+      "default": "#dee3e6",
+      "light": "#171c1f"
+    },
+    "on_error": {
+      "dark": "#690005",
+      "default": "#690005",
+      "light": "#ffffff"
+    },
+    "on_error_container": {
+      "dark": "#ffdad6",
+      "default": "#ffdad6",
+      "light": "#410002"
+    },
+    "on_primary": {
+      "dark": "#003543",
+      "default": "#003543",
+      "light": "#ffffff"
+    },
+    "on_primary_container": {
+      "dark": "#b6ebff",
+      "default": "#b6ebff",
+      "light": "#001f28"
+    },
+    "on_primary_fixed": {
+      "dark": "#001f28",
+      "default": "#001f28",
+      "light": "#001f28"
+    },
+    "on_primary_fixed_variant": {
+      "dark": "#004e60",
+      "default": "#004e60",
+      "light": "#004e60"
+    },
+    "on_secondary": {
+      "dark": "#1e333b",
+      "default": "#1e333b",
+      "light": "#ffffff"
+    },
+    "on_secondary_container": {
+      "dark": "#cfe6f0",
+      "default": "#cfe6f0",
+      "light": "#071e26"
+    },
+    "on_secondary_fixed": {
+      "dark": "#071e26",
+      "default": "#071e26",
+      "light": "#071e26"
+    },
+    "on_secondary_fixed_variant": {
+      "dark": "#344a52",
+      "default": "#344a52",
+      "light": "#344a52"
+    },
+    "on_surface": {
+      "dark": "#dee3e6",
+      "default": "#dee3e6",
+      "light": "#171c1f"
+    },
+    "on_surface_variant": {
+      "dark": "#bfc8cc",
+      "default": "#bfc8cc",
+      "light": "#40484c"
+    },
+    "on_tertiary": {
+      "dark": "#2b2e4d",
+      "default": "#2b2e4d",
+      "light": "#ffffff"
+    },
+    "on_tertiary_container": {
+      "dark": "#e0e0ff",
+      "default": "#e0e0ff",
+      "light": "#161937"
+    },
+    "on_tertiary_fixed": {
+      "dark": "#161937",
+      "default": "#161937",
+      "light": "#161937"
+    },
+    "on_tertiary_fixed_variant": {
+      "dark": "#424465",
+      "default": "#424465",
+      "light": "#424465"
+    },
+    "outline": {
+      "dark": "#8a9296",
+      "default": "#8a9296",
+      "light": "#70787c"
+    },
+    "outline_variant": {
+      "dark": "#40484c",
+      "default": "#40484c",
+      "light": "#bfc8cc"
+    },
+    "primary": {
+      "dark": "#87d1eb",
+      "default": "#87d1eb",
+      "light": "#05677e"
+    },
+    "primary_container": {
+      "dark": "#004e60",
+      "default": "#004e60",
+      "light": "#b6ebff"
+    },
+    "primary_fixed": {
+      "dark": "#b6ebff",
+      "default": "#b6ebff",
+      "light": "#b6ebff"
+    },
+    "primary_fixed_dim": {
+      "dark": "#87d1eb",
+      "default": "#87d1eb",
+      "light": "#87d1eb"
+    },
+    "scrim": {
+      "dark": "#000000",
+      "default": "#000000",
+      "light": "#000000"
+    },
+    "secondary": {
+      "dark": "#b3cad4",
+      "default": "#b3cad4",
+      "light": "#4c626a"
+    },
+    "secondary_container": {
+      "dark": "#344a52",
+      "default": "#344a52",
+      "light": "#cfe6f0"
+    },
+    "secondary_fixed": {
+      "dark": "#cfe6f0",
+      "default": "#cfe6f0",
+      "light": "#cfe6f0"
+    },
+    "secondary_fixed_dim": {
+      "dark": "#b3cad4",
+      "default": "#b3cad4",
+      "light": "#b3cad4"
+    },
+    "shadow": {
+      "dark": "#000000",
+      "default": "#000000",
+      "light": "#000000"
+    },
+    "source_color": {
+      "dark": "#7cafc2",
+      "default": "#7cafc2",
+      "light": "#7cafc2"
+    },
+    "surface": {
+      "dark": "#0f1416",
+      "default": "#0f1416",
+      "light": "#f5fafd"
+    },
+    "surface_bright": {
+      "dark": "#353a3c",
+      "default": "#353a3c",
+      "light": "#f5fafd"
+    },
+    "surface_container": {
+      "dark": "#1b2023",
+      "default": "#1b2023",
+      "light": "#eaeff1"
+    },
+    "surface_container_high": {
+      "dark": "#252b2d",
+      "default": "#252b2d",
+      "light": "#e4e9ec"
+    },
+    "surface_container_highest": {
+      "dark": "#303638",
+      "default": "#303638",
+      "light": "#dee3e6"
+    },
+    "surface_container_low": {
+      "dark": "#171c1f",
+      "default": "#171c1f",
+      "light": "#eff4f7"
+    },
+    "surface_container_lowest": {
+      "dark": "#0a0f11",
+      "default": "#0a0f11",
+      "light": "#ffffff"
+    },
+    "surface_dim": {
+      "dark": "#0f1416",
+      "default": "#0f1416",
+      "light": "#d6dbde"
+    },
+    "surface_tint": {
+      "dark": "#87d1eb",
+      "default": "#87d1eb",
+      "light": "#05677e"
+    },
+    "surface_variant": {
+      "dark": "#40484c",
+      "default": "#40484c",
+      "light": "#dbe4e8"
+    },
+    "tertiary": {
+      "dark": "#c2c3eb",
+      "default": "#c2c3eb",
+      "light": "#5a5c7e"
+    },
+    "tertiary_container": {
+      "dark": "#424465",
+      "default": "#424465",
+      "light": "#e0e0ff"
+    },
+    "tertiary_fixed": {
+      "dark": "#e0e0ff",
+      "default": "#e0e0ff",
+      "light": "#e0e0ff"
+    },
+    "tertiary_fixed_dim": {
+      "dark": "#c2c3eb",
+      "default": "#c2c3eb",
+      "light": "#c2c3eb"
+    }
+  }
+}

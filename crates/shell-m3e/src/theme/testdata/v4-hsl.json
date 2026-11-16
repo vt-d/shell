@@ -1,0 +1,556 @@
+{
+  "mode": "dark",
+  "is_dark_mode": true,
+  "colors": {
+    "background": {
+      "dark": {
+        "color": "hsl(197, 19%, 7%)"
+      },
+      "default": {
+        "color": "hsl(197, 19%, 7%)"
+      },
+      "light": {
+        "color": "hsl(202, 67%, 98%)"
+      }
+    },
+    "error": {
+      "dark": {
+        "color": "hsl(6, 100%, 84%)"
+      },
+      "default": {
+        "color": "hsl(6, 100%, 84%)"
+      },
+      "light": {
+        "color": "hsl(0, 75%, 42%)"
+      }
+    },
+    "error_container": {
+      "dark": {
+        "color": "hsl(356, 100%, 29%)"
+      },
+      "default": {
+        "color": "hsl(356, 100%, 29%)"
+      },
+      "light": {
+        "color": "hsl(6, 100%, 92%)"
+      }
+    },
+    "inverse_on_surface": {
+      "dark": {
+        "color": "hsl(202, 8%, 19%)"
+      },
+      "default": {
+        "color": "hsl(202, 8%, 19%)"
+      },
+      "light": {
+        "color": "hsl(206, 24%, 94%)"
+      }
+    },
+    "inverse_primary": {
+      "dark": {
+        "color": "hsl(191, 92%, 26%)"
+      },
+      "default": {
+        "color": "hsl(191, 92%, 26%)"
+      },
+      "light": {
+        "color": "hsl(196, 71%, 73%)"
+      }
+    },
+    "inverse_surface": {
+      "dark": {
+        "color": "hsl(202, 14%, 89%)"
+      },
+      "default": {
+        "color": "hsl(202, 14%, 89%)"
+      },
+      "light": {
+        "color": "hsl(202, 8%, 19%)"
+      }
+    },
+    "on_background": {
+      "dark": {
+        "color": "hsl(202, 14%, 89%)"
+      },
+      "default": {
+        "color": "hsl(202, 14%, 89%)"
+      },
+      "light": {
+        "color": "hsl(202, 15%, 11%)"
+      }
+    },
+    "on_error": {
+      "dark": {
+        "color": "hsl(357, 100%, 21%)"
+      },
+      "default": {
+        "color": "hsl(357, 100%, 21%)"
+      },
+      "light": {
+        "color": "hsl(0, 0%, 100%)"
+      }
+    },
+    "on_error_container": {
+      "dark": {
+        "color": "hsl(6, 100%, 92%)"
+      },
+      "default": {
+        "color": "hsl(6, 100%, 92%)"
+      },
+      "light": {
+        "color": "hsl(358, 100%, 13%)"
+      }
+    },
+    "on_primary": {
+      "dark": {
+        "color": "hsl(193, 100%, 13%)"
+      },
+      "default": {
+        "color": "hsl(193, 100%, 13%)"
+      },
+      "light": {
+        "color": "hsl(0, 0%, 100%)"
+      }
+    },
+    "on_primary_container": {
+      "dark": {
+        "color": "hsl(196, 100%, 86%)"
+      },
+      "default": {
+        "color": "hsl(196, 100%, 86%)"
+      },
+      "light": {
+        "color": "hsl(194, 100%, 8%)"
+      }
+    },
+    "on_primary_fixed": {
+      "dark": {
+        "color": "hsl(194, 100%, 8%)"
+      },
+      "default": {
+        "color": "hsl(194, 100%, 8%)"
+      },
+      "light": {
+        "color": "hsl(194, 100%, 8%)"
+      }
+    },
+    "on_primary_fixed_variant": {
+      "dark": {
+        "color": "hsl(191, 100%, 19%)"
+      },
+      "default": {
+        "color": "hsl(191, 100%, 19%)"
+      },
+      "light": {
+        "color": "hsl(191, 100%, 19%)"
+      }
+    },
+    "on_secondary": {
+      "dark": {
+        "color": "hsl(197, 33%, 17%)"
+      },
+      "default": {
+        "color": "hsl(197, 33%, 17%)"
+      },
+      "light": {
+        "color": "hsl(0, 0%, 100%)"
+      }
+    },
+    "on_secondary_container": {
+      "dark": {
+        "color": "hsl(198, 52%, 88%)"
+      },
+      "default": {
+        "color": "hsl(198, 52%, 88%)"
+      },
+      "light": {
+        "color": "hsl(195, 69%, 9%)"
+      }
+    },
+    "on_secondary_fixed": {
+      "dark": {
+        "color": "hsl(195, 69%, 9%)"
+      },
+      "default": {
+        "color": "hsl(195, 69%, 9%)"
+      },
+      "light": {
+        "color": "hsl(195, 69%, 9%)"
+      }
+    },
+    "on_secondary_fixed_variant": {
+      "dark": {
+        "color": "hsl(196, 22%, 26%)"
+      },
+      "default": {
+        "color": "hsl(196, 22%, 26%)"
+      },
+      "light": {
+        "color": "hsl(196, 22%, 26%)"
+      }
+    },
+    "on_surface": {
+      "dark": {
+        "color": "hsl(202, 14%, 89%)"
+      },
+      "default": {
+        "color": "hsl(202, 14%, 89%)"
+      },
+      "light": {
+        "color": "hsl(202, 15%, 11%)"
+      }
+    },
+    "on_surface_variant": {
+      "dark": {
+        "color": "hsl(198, 11%, 77%)"
+      },
+      "default": {
+        "color": "hsl(198, 11%, 77%)"
+      },
+      "light": {
+        "color": "hsl(200, 9%, 27%)"
+      }
+    },
+    "on_tertiary": {
+      "dark": {
+        "color": "hsl(235, 28%, 24%)"
+      },
+      "default": {
+        "color": "hsl(235, 28%, 24%)"
+      },
+      "light": {
+        "color": "hsl(0, 0%, 100%)"
+      }
+    },
+    "on_tertiary_container": {
+      "dark": {
+        "color": "hsl(240, 100%, 94%)"
+      },
+      "default": {
+        "color": "hsl(240, 100%, 94%)"
+      },
+      "light": {
+        "color": "hsl(235, 43%, 15%)"
+      }
+    },
+    "on_tertiary_fixed": {
+      "dark": {
+        "color": "hsl(235, 43%, 15%)"
+      },
+      "default": {
+        "color": "hsl(235, 43%, 15%)"
+      },
+      "light": {
+        "color": "hsl(235, 43%, 15%)"
+      }
+    },
+    "on_tertiary_fixed_variant": {
+      "dark": {
+        "color": "hsl(237, 21%, 33%)"
+      },
+      "default": {
+        "color": "hsl(237, 21%, 33%)"
+      },
+      "light": {
+        "color": "hsl(237, 21%, 33%)"
+      }
+    },
+    "outline": {
+      "dark": {
+        "color": "hsl(200, 5%, 56%)"
+      },
+      "default": {
+        "color": "hsl(200, 5%, 56%)"
+      },
+      "light": {
+        "color": "hsl(200, 5%, 46%)"
+      }
+    },
+    "outline_variant": {
+      "dark": {
+        "color": "hsl(200, 9%, 27%)"
+      },
+      "default": {
+        "color": "hsl(200, 9%, 27%)"
+      },
+      "light": {
+        "color": "hsl(198, 11%, 77%)"
+      }
+    },
+    "primary": {
+      "dark": {
+        "color": "hsl(196, 71%, 73%)"
+      },
+      "default": {
+        "color": "hsl(196, 71%, 73%)"
+      },
+      "light": {
+        "color": "hsl(191, 92%, 26%)"
+      }
+    },
+    "primary_container": {
+      "dark": {
+        "color": "hsl(191, 100%, 19%)"
+      },
+      "default": {
+        "color": "hsl(191, 100%, 19%)"
+      },
+      "light": {
+        "color": "hsl(196, 100%, 86%)"
+      }
+    },
+    "primary_fixed": {
+      "dark": {
+        "color": "hsl(196, 100%, 86%)"
+      },
+      "default": {
+        "color": "hsl(196, 100%, 86%)"
+      },
+      "light": {
+        "color": "hsl(196, 100%, 86%)"
+      }
+    },
+    "primary_fixed_dim": {
+      "dark": {
+        "color": "hsl(196, 71%, 73%)"
+      },
+      "default": {
+        "color": "hsl(196, 71%, 73%)"
+      },
+      "light": {
+        "color": "hsl(196, 71%, 73%)"
+      }
+    },
+    "scrim": {
+      "dark": {
+        "color": "hsl(0, 0%, 0%)"
+      },
+      "default": {
+        "color": "hsl(0, 0%, 0%)"
+      },
+      "light": {
+        "color": "hsl(0, 0%, 0%)"
+      }
+    },
+    "secondary": {
+      "dark": {
+        "color": "hsl(198, 28%, 77%)"
+      },
+      "default": {
+        "color": "hsl(198, 28%, 77%)"
+      },
+      "light": {
+        "color": "hsl(196, 16%, 36%)"
+      }
+    },
+    "secondary_container": {
+      "dark": {
+        "color": "hsl(196, 22%, 26%)"
+      },
+      "default": {
+        "color": "hsl(196, 22%, 26%)"
+      },
+      "light": {
+        "color": "hsl(198, 52%, 88%)"
+      }
+    },
+    "secondary_fixed": {
+      "dark": {
+        "color": "hsl(198, 52%, 88%)"
+      },
+      "default": {
+        "color": "hsl(198, 52%, 88%)"
+      },
+      "light": {
+        "color": "hsl(198, 52%, 88%)"
+      }
+    },
+    "secondary_fixed_dim": {
+      "dark": {
+        "color": "hsl(198, 28%, 77%)"
+      },
+      "default": {
+        "color": "hsl(198, 28%, 77%)"
+      },
+      "light": {
+        "color": "hsl(198, 28%, 77%)"
+      }
+    },
+    "shadow": {
+      "dark": {
+        "color": "hsl(0, 0%, 0%)"
+      },
+      "default": {
+        "color": "hsl(0, 0%, 0%)"
+      },
+      "light": {
+        "color": "hsl(0, 0%, 0%)"
+      }
+    },
+    "source_color": {
+      "dark": {
+        "color": "hsl(196, 36%, 62%)"
+      },
+      "default": {
+        "color": "hsl(196, 36%, 62%)"
+      },
+      "light": {
+        "color": "hsl(196, 36%, 62%)"
+      }
+    },
+    "surface": {
+      "dark": {
+        "color": "hsl(197, 19%, 7%)"
+      },
+      "default": {
+        "color": "hsl(197, 19%, 7%)"
+      },
+      "light": {
+        "color": "hsl(202, 67%, 98%)"
+      }
+    },
+    "surface_bright": {
+      "dark": {
+        "color": "hsl(197, 6%, 22%)"
+      },
+      "default": {
+        "color": "hsl(197, 6%, 22%)"
+      },
+      "light": {
+        "color": "hsl(202, 67%, 98%)"
+      }
+    },
+    "surface_container": {
+      "dark": {
+        "color": "hsl(202, 13%, 12%)"
+      },
+      "default": {
+        "color": "hsl(202, 13%, 12%)"
+      },
+      "light": {
+        "color": "hsl(197, 20%, 93%)"
+      }
+    },
+    "surface_container_high": {
+      "dark": {
+        "color": "hsl(195, 10%, 16%)"
+      },
+      "default": {
+        "color": "hsl(195, 10%, 16%)"
+      },
+      "light": {
+        "color": "hsl(202, 17%, 91%)"
+      }
+    },
+    "surface_container_highest": {
+      "dark": {
+        "color": "hsl(195, 8%, 20%)"
+      },
+      "default": {
+        "color": "hsl(195, 8%, 20%)"
+      },
+      "light": {
+        "color": "hsl(202, 14%, 89%)"
+      }
+    },
+    "surface_container_low": {
+      "dark": {
+        "color": "hsl(202, 15%, 11%)"
+      },
+      "default": {
+        "color": "hsl(202, 15%, 11%)"
+      },
+      "light": {
+        "color": "hsl(202, 33%, 95%)"
+      }
+    },
+    "surface_container_lowest": {
+      "dark": {
+        "color": "hsl(197, 26%, 5%)"
+      },
+      "default": {
+        "color": "hsl(197, 26%, 5%)"
+      },
+      "light": {
+        "color": "hsl(0, 0%, 100%)"
+      }
+    },
+    "surface_dim": {
+      "dark": {
+        "color": "hsl(197, 19%, 7%)"
+      },
+      "default": {
+        "color": "hsl(197, 19%, 7%)"
+      },
+      "light": {
+        "color": "hsl(202, 11%, 85%)"
+      }
+    },
+    "surface_tint": {
+      "dark": {
+        "color": "hsl(196, 71%, 73%)"
+      },
+      "default": {
+        "color": "hsl(196, 71%, 73%)"
+      },
+      "light": {
+        "color": "hsl(191, 92%, 26%)"
+      }
+    },
+    "surface_variant": {
+      "dark": {
+        "color": "hsl(200, 9%, 27%)"
+      },
+      "default": {
+        "color": "hsl(200, 9%, 27%)"
+      },
+      "light": {
+        "color": "hsl(198, 22%, 88%)"
+      }
+    },
+    "tertiary": {
+      "dark": {
+        "color": "hsl(239, 51%, 84%)"
+      },
+      "default": {
+        "color": "hsl(239, 51%, 84%)"
+      },
+      "light": {
+        "color": "hsl(237, 17%, 42%)"
+      }
+    },
+    "tertiary_container": {
+      "dark": {
+        "color": "hsl(237, 21%, 33%)"
+      },
+      "default": {
+        "color": "hsl(237, 21%, 33%)"
+      },
+      "light": {
+        "color": "hsl(240, 100%, 94%)"
+      }
+    },
+    "tertiary_fixed": {
+      "dark": {
+        "color": "hsl(240, 100%, 94%)"
+      },
+      "default": {
+        "color": "hsl(240, 100%, 94%)"
+      },
+      "light": {
+        "color": "hsl(240, 100%, 94%)"
+      }
+    },
+    "tertiary_fixed_dim": {
+      "dark": {
+        "color": "hsl(239, 51%, 84%)"
+      },
+      "default": {
+        "color": "hsl(239, 51%, 84%)"
+      },
+      "light": {
+        "color": "hsl(239, 51%, 84%)"
+      }
+    }
+  }
+}

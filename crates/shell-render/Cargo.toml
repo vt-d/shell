@@ -1,0 +1,18 @@
+[package]
+name = "shell-render"
+description = "GPU rendering of quads, shapes and text onto Wayland surfaces, with wgpu"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+bytemuck.workspace = true
+cosmic-text.workspace = true
+etagere.workspace = true
+png.workspace = true
+zune-jpeg.workspace = true
+pollster.workspace = true
+raw-window-handle.workspace = true
+resvg.workspace = true
+swash.workspace = true
+wayland-client.workspace = true
+wgpu.workspace = true

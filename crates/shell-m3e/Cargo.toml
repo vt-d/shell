@@ -1,0 +1,13 @@
+[package]
+name = "shell-m3e"
+description = "Material 3 Expressive for shell-ui: shapes, matugen color themes and motion tokens"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+shell-motion.workspace = true
+shell-render.workspace = true
+shell-ui.workspace = true
+
+inotify.workspace = true
+serde_json.workspace = true

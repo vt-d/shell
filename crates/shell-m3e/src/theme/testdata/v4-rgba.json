@@ -1,0 +1,556 @@
+{
+  "mode": "dark",
+  "is_dark_mode": true,
+  "colors": {
+    "background": {
+      "dark": {
+        "color": "rgba(15, 20, 22, 1)"
+      },
+      "default": {
+        "color": "rgba(15, 20, 22, 1)"
+      },
+      "light": {
+        "color": "rgba(245, 250, 253, 1)"
+      }
+    },
+    "error": {
+      "dark": {
+        "color": "rgba(255, 180, 171, 1)"
+      },
+      "default": {
+        "color": "rgba(255, 180, 171, 1)"
+      },
+      "light": {
+        "color": "rgba(186, 26, 26, 1)"
+      }
+    },
+    "error_container": {
+      "dark": {
+        "color": "rgba(147, 0, 10, 1)"
+      },
+      "default": {
+        "color": "rgba(147, 0, 10, 1)"
+      },
+      "light": {
+        "color": "rgba(255, 218, 214, 1)"
+      }
+    },
+    "inverse_on_surface": {
+      "dark": {
+        "color": "rgba(44, 49, 52, 1)"
+      },
+      "default": {
+        "color": "rgba(44, 49, 52, 1)"
+      },
+      "light": {
+        "color": "rgba(237, 241, 244, 1)"
+      }
+    },
+    "inverse_primary": {
+      "dark": {
+        "color": "rgba(5, 103, 126, 1)"
+      },
+      "default": {
+        "color": "rgba(5, 103, 126, 1)"
+      },
+      "light": {
+        "color": "rgba(135, 209, 235, 1)"
+      }
+    },
+    "inverse_surface": {
+      "dark": {
+        "color": "rgba(222, 227, 230, 1)"
+      },
+      "default": {
+        "color": "rgba(222, 227, 230, 1)"
+      },
+      "light": {
+        "color": "rgba(44, 49, 52, 1)"
+      }
+    },
+    "on_background": {
+      "dark": {
+        "color": "rgba(222, 227, 230, 1)"
+      },
+      "default": {
+        "color": "rgba(222, 227, 230, 1)"
+      },
+      "light": {
+        "color": "rgba(23, 28, 31, 1)"
+      }
+    },
+    "on_error": {
+      "dark": {
+        "color": "rgba(105, 0, 5, 1)"
+      },
+      "default": {
+        "color": "rgba(105, 0, 5, 1)"
+      },
+      "light": {
+        "color": "rgba(255, 255, 255, 1)"
+      }
+    },
+    "on_error_container": {
+      "dark": {
+        "color": "rgba(255, 218, 214, 1)"
+      },
+      "default": {
+        "color": "rgba(255, 218, 214, 1)"
+      },
+      "light": {
+        "color": "rgba(65, 0, 2, 1)"
+      }
+    },
+    "on_primary": {
+      "dark": {
+        "color": "rgba(0, 53, 67, 1)"
+      },
+      "default": {
+        "color": "rgba(0, 53, 67, 1)"
+      },
+      "light": {
+        "color": "rgba(255, 255, 255, 1)"
+      }
+    },
+    "on_primary_container": {
+      "dark": {
+        "color": "rgba(182, 235, 255, 1)"
+      },
+      "default": {
+        "color": "rgba(182, 235, 255, 1)"
+      },
+      "light": {
+        "color": "rgba(0, 31, 40, 1)"
+      }
+    },
+    "on_primary_fixed": {
+      "dark": {
+        "color": "rgba(0, 31, 40, 1)"
+      },
+      "default": {
+        "color": "rgba(0, 31, 40, 1)"
+      },
+      "light": {
+        "color": "rgba(0, 31, 40, 1)"
+      }
+    },
+    "on_primary_fixed_variant": {
+      "dark": {
+        "color": "rgba(0, 78, 96, 1)"
+      },
+      "default": {
+        "color": "rgba(0, 78, 96, 1)"
+      },
+      "light": {
+        "color": "rgba(0, 78, 96, 1)"
+      }
+    },
+    "on_secondary": {
+      "dark": {
+        "color": "rgba(30, 51, 59, 1)"
+      },
+      "default": {
+        "color": "rgba(30, 51, 59, 1)"
+      },
+      "light": {
+        "color": "rgba(255, 255, 255, 1)"
+      }
+    },
+    "on_secondary_container": {
+      "dark": {
+        "color": "rgba(207, 230, 240, 1)"
+      },
+      "default": {
+        "color": "rgba(207, 230, 240, 1)"
+      },
+      "light": {
+        "color": "rgba(7, 30, 38, 1)"
+      }
+    },
+    "on_secondary_fixed": {
+      "dark": {
+        "color": "rgba(7, 30, 38, 1)"
+      },
+      "default": {
+        "color": "rgba(7, 30, 38, 1)"
+      },
+      "light": {
+        "color": "rgba(7, 30, 38, 1)"
+      }
+    },
+    "on_secondary_fixed_variant": {
+      "dark": {
+        "color": "rgba(52, 74, 82, 1)"
+      },
+      "default": {
+        "color": "rgba(52, 74, 82, 1)"
+      },
+      "light": {
+        "color": "rgba(52, 74, 82, 1)"
+      }
+    },
+    "on_surface": {
+      "dark": {
+        "color": "rgba(222, 227, 230, 1)"
+      },
+      "default": {
+        "color": "rgba(222, 227, 230, 1)"
+      },
+      "light": {
+        "color": "rgba(23, 28, 31, 1)"
+      }
+    },
+    "on_surface_variant": {
+      "dark": {
+        "color": "rgba(191, 200, 204, 1)"
+      },
+      "default": {
+        "color": "rgba(191, 200, 204, 1)"
+      },
+      "light": {
+        "color": "rgba(64, 72, 76, 1)"
+      }
+    },
+    "on_tertiary": {
+      "dark": {
+        "color": "rgba(43, 46, 77, 1)"
+      },
+      "default": {
+        "color": "rgba(43, 46, 77, 1)"
+      },
+      "light": {
+        "color": "rgba(255, 255, 255, 1)"
+      }
+    },
+    "on_tertiary_container": {
+      "dark": {
+        "color": "rgba(224, 224, 255, 1)"
+      },
+      "default": {
+        "color": "rgba(224, 224, 255, 1)"
+      },
+      "light": {
+        "color": "rgba(22, 25, 55, 1)"
+      }
+    },
+    "on_tertiary_fixed": {
+      "dark": {
+        "color": "rgba(22, 25, 55, 1)"
+      },
+      "default": {
+        "color": "rgba(22, 25, 55, 1)"
+      },
+      "light": {
+        "color": "rgba(22, 25, 55, 1)"
+      }
+    },
+    "on_tertiary_fixed_variant": {
+      "dark": {
+        "color": "rgba(66, 68, 101, 1)"
+      },
+      "default": {
+        "color": "rgba(66, 68, 101, 1)"
+      },
+      "light": {
+        "color": "rgba(66, 68, 101, 1)"
+      }
+    },
+    "outline": {
+      "dark": {
+        "color": "rgba(138, 146, 150, 1)"
+      },
+      "default": {
+        "color": "rgba(138, 146, 150, 1)"
+      },
+      "light": {
+        "color": "rgba(112, 120, 124, 1)"
+      }
+    },
+    "outline_variant": {
+      "dark": {
+        "color": "rgba(64, 72, 76, 1)"
+      },
+      "default": {
+        "color": "rgba(64, 72, 76, 1)"
+      },
+      "light": {
+        "color": "rgba(191, 200, 204, 1)"
+      }
+    },
+    "primary": {
+      "dark": {
+        "color": "rgba(135, 209, 235, 1)"
+      },
+      "default": {
+        "color": "rgba(135, 209, 235, 1)"
+      },
+      "light": {
+        "color": "rgba(5, 103, 126, 1)"
+      }
+    },
+    "primary_container": {
+      "dark": {
+        "color": "rgba(0, 78, 96, 1)"
+      },
+      "default": {
+        "color": "rgba(0, 78, 96, 1)"
+      },
+      "light": {
+        "color": "rgba(182, 235, 255, 1)"
+      }
+    },
+    "primary_fixed": {
+      "dark": {
+        "color": "rgba(182, 235, 255, 1)"
+      },
+      "default": {
+        "color": "rgba(182, 235, 255, 1)"
+      },
+      "light": {
+        "color": "rgba(182, 235, 255, 1)"
+      }
+    },
+    "primary_fixed_dim": {
+      "dark": {
+        "color": "rgba(135, 209, 235, 1)"
+      },
+      "default": {
+        "color": "rgba(135, 209, 235, 1)"
+      },
+      "light": {
+        "color": "rgba(135, 209, 235, 1)"
+      }
+    },
+    "scrim": {
+      "dark": {
+        "color": "rgba(0, 0, 0, 1)"
+      },
+      "default": {
+        "color": "rgba(0, 0, 0, 1)"
+      },
+      "light": {
+        "color": "rgba(0, 0, 0, 1)"
+      }
+    },
+    "secondary": {
+      "dark": {
+        "color": "rgba(179, 202, 212, 1)"
+      },
+      "default": {
+        "color": "rgba(179, 202, 212, 1)"
+      },
+      "light": {
+        "color": "rgba(76, 98, 106, 1)"
+      }
+    },
+    "secondary_container": {
+      "dark": {
+        "color": "rgba(52, 74, 82, 1)"
+      },
+      "default": {
+        "color": "rgba(52, 74, 82, 1)"
+      },
+      "light": {
+        "color": "rgba(207, 230, 240, 1)"
+      }
+    },
+    "secondary_fixed": {
+      "dark": {
+        "color": "rgba(207, 230, 240, 1)"
+      },
+      "default": {
+        "color": "rgba(207, 230, 240, 1)"
+      },
+      "light": {
+        "color": "rgba(207, 230, 240, 1)"
+      }
+    },
+    "secondary_fixed_dim": {
+      "dark": {
+        "color": "rgba(179, 202, 212, 1)"
+      },
+      "default": {
+        "color": "rgba(179, 202, 212, 1)"
+      },
+      "light": {
+        "color": "rgba(179, 202, 212, 1)"
+      }
+    },
+    "shadow": {
+      "dark": {
+        "color": "rgba(0, 0, 0, 1)"
+      },
+      "default": {
+        "color": "rgba(0, 0, 0, 1)"
+      },
+      "light": {
+        "color": "rgba(0, 0, 0, 1)"
+      }
+    },
+    "source_color": {
+      "dark": {
+        "color": "rgba(124, 175, 194, 1)"
+      },
+      "default": {
+        "color": "rgba(124, 175, 194, 1)"
+      },
+      "light": {
+        "color": "rgba(124, 175, 194, 1)"
+      }
+    },
+    "surface": {
+      "dark": {
+        "color": "rgba(15, 20, 22, 1)"
+      },
+      "default": {
+        "color": "rgba(15, 20, 22, 1)"
+      },
+      "light": {
+        "color": "rgba(245, 250, 253, 1)"
+      }
+    },
+    "surface_bright": {
+      "dark": {
+        "color": "rgba(53, 58, 60, 1)"
+      },
+      "default": {
+        "color": "rgba(53, 58, 60, 1)"
+      },
+      "light": {
+        "color": "rgba(245, 250, 253, 1)"
+      }
+    },
+    "surface_container": {
+      "dark": {
+        "color": "rgba(27, 32, 35, 1)"
+      },
+      "default": {
+        "color": "rgba(27, 32, 35, 1)"
+      },
+      "light": {
+        "color": "rgba(234, 239, 241, 1)"
+      }
+    },
+    "surface_container_high": {
+      "dark": {
+        "color": "rgba(37, 43, 45, 1)"
+      },
+      "default": {
+        "color": "rgba(37, 43, 45, 1)"
+      },
+      "light": {
+        "color": "rgba(228, 233, 236, 1)"
+      }
+    },
+    "surface_container_highest": {
+      "dark": {
+        "color": "rgba(48, 54, 56, 1)"
+      },
+      "default": {
+        "color": "rgba(48, 54, 56, 1)"
+      },
+      "light": {
+        "color": "rgba(222, 227, 230, 1)"
+      }
+    },
+    "surface_container_low": {
+      "dark": {
+        "color": "rgba(23, 28, 31, 1)"
+      },
+      "default": {
+        "color": "rgba(23, 28, 31, 1)"
+      },
+      "light": {
+        "color": "rgba(239, 244, 247, 1)"
+      }
+    },
+    "surface_container_lowest": {
+      "dark": {
+        "color": "rgba(10, 15, 17, 1)"
+      },
+      "default": {
+        "color": "rgba(10, 15, 17, 1)"
+      },
+      "light": {
+        "color": "rgba(255, 255, 255, 1)"
+      }
+    },
+    "surface_dim": {
+      "dark": {
+        "color": "rgba(15, 20, 22, 1)"
+      },
+      "default": {
+        "color": "rgba(15, 20, 22, 1)"
+      },
+      "light": {
+        "color": "rgba(214, 219, 222, 1)"
+      }
+    },
+    "surface_tint": {
+      "dark": {
+        "color": "rgba(135, 209, 235, 1)"
+      },
+      "default": {
+        "color": "rgba(135, 209, 235, 1)"
+      },
+      "light": {
+        "color": "rgba(5, 103, 126, 1)"
+      }
+    },
+    "surface_variant": {
+      "dark": {
+        "color": "rgba(64, 72, 76, 1)"
+      },
+      "default": {
+        "color": "rgba(64, 72, 76, 1)"
+      },
+      "light": {
+        "color": "rgba(219, 228, 232, 1)"
+      }
+    },
+    "tertiary": {
+      "dark": {
+        "color": "rgba(194, 195, 235, 1)"
+      },
+      "default": {
+        "color": "rgba(194, 195, 235, 1)"
+      },
+      "light": {
+        "color": "rgba(90, 92, 126, 1)"
+      }
+    },
+    "tertiary_container": {
+      "dark": {
+        "color": "rgba(66, 68, 101, 1)"
+      },
+      "default": {
+        "color": "rgba(66, 68, 101, 1)"
+      },
+      "light": {
+        "color": "rgba(224, 224, 255, 1)"
+      }
+    },
+    "tertiary_fixed": {
+      "dark": {
+        "color": "rgba(224, 224, 255, 1)"
+      },
+      "default": {
+        "color": "rgba(224, 224, 255, 1)"
+      },
+      "light": {
+        "color": "rgba(224, 224, 255, 1)"
+      }
+    },
+    "tertiary_fixed_dim": {
+      "dark": {
+        "color": "rgba(194, 195, 235, 1)"
+      },
+      "default": {
+        "color": "rgba(194, 195, 235, 1)"
+      },
+      "light": {
+        "color": "rgba(194, 195, 235, 1)"
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+[package]
+name = "shell-main"
+description = "The shell itself: a Material 3 Expressive bar for Hyprland"
+version.workspace = true
+edition.workspace = true
+
+[[bin]]
+name = "shell"
+path = "src/main.rs"
+
+[dependencies]
+shell-m3e.workspace = true
+shell-services.workspace = true
+shell-ui.workspace = true

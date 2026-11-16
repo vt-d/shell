@@ -1,0 +1,12 @@
+[package]
+name = "shell-services"
+description = "System services the shell reflects (Hyprland, ...), as calloop event sources"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+calloop.workspace = true
+libc.workspace = true
+png.workspace = true
+serde_json.workspace = true
+zbus.workspace = true

@@ -1,0 +1,13 @@
+[package]
+name = "shell-ui"
+description = "Declarative layer-shell windows: flexbox elements, text, and frame-paced redraws"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+shell-motion.workspace = true
+shell-render.workspace = true
+
+smithay-client-toolkit.workspace = true
+taffy.workspace = true
+wayland-client.workspace = true

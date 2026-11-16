@@ -1,0 +1,15 @@
+/target
+/result
+/result-*
+.direnv/
+
+# Local credentials and agent state must never enter a source release.
+.env
+.env.*
+!.env.example
+.aws/
+.agents/
+.codex/
+*.pem
+*.key
+secrets/
