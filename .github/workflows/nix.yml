@@ -15,6 +15,9 @@ concurrency:
 jobs:
   build:
     name: Build and check (${{ matrix.system }})
+    environment: Cachix
+    env:
+      CACHIX_CACHE_NAME: ${{ secrets.CACHIX_CACHE_NAME || vars.CACHIX_CACHE_NAME }}
     strategy:
       fail-fast: false
       matrix:
@@ -36,10 +39,10 @@ jobs:
             experimental-features = nix-command flakes
 
       - name: Configure public Cachix cache (read only)
-        if: vars.CACHIX_CACHE_NAME != ''
+        if: env.CACHIX_CACHE_NAME != ''
         uses: cachix/cachix-action@38b082610b782e7e93e209c35fd730d399dee866 # v17
         with:
-          name: ${{ vars.CACHIX_CACHE_NAME }}
+          name: ${{ env.CACHIX_CACHE_NAME }}
           skipPush: true
 
       - name: Check flake and Home Manager module
@@ -52,12 +55,11 @@ jobs:
       # the write token, including PRs originating in this repository.
       - name: Publish runtime closure to Cachix
         if: >-
-          vars.CACHIX_CACHE_NAME != '' &&
+          env.CACHIX_CACHE_NAME != '' &&
           github.event_name != 'pull_request' &&
           github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         env:
           CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          CACHIX_CACHE_NAME: ${{ vars.CACHIX_CACHE_NAME }}
         run: |
           test -n "$CACHIX_AUTH_TOKEN" || { echo 'Set the CACHIX_AUTH_TOKEN repository secret.' >&2; exit 1; }
           cachix push "$CACHIX_CACHE_NAME" "$(readlink -f result)"
