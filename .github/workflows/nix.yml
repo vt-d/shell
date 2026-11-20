@@ -51,35 +51,6 @@ jobs:
       - name: Build package for publication
         run: nix build --no-update-lock-file --print-build-logs .#packages.${{ matrix.system }}.default
 
-      # Also build against the pin used by nixos' shell.inputs.nixpkgs.follows.
-      - name: Check out NixOS dependency pins
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          repository: vt-d/nixos
-          path: .ci/nixos
-          persist-credentials: false
-
-      - name: Read NixOS nixpkgs pin
-        id: nixos-pin
-        shell: bash
-        run: |
-          nixpkgs_url=$(jq -er '
-            .nodes as $nodes
-            | $nodes[$nodes[.root].inputs.nixpkgs].locked
-            | select(.type == "github")
-            | "github:\(.owner)/\(.repo)/\(.rev)?narHash=\(.narHash | @uri)"
-          ' .ci/nixos/flake.lock)
-          echo "url=$nixpkgs_url" >> "$GITHUB_OUTPUT"
-          echo "Building with NixOS nixpkgs: $nixpkgs_url"
-
-      - name: Build package with NixOS nixpkgs
-        env:
-          NIXPKGS_URL: ${{ steps.nixos-pin.outputs.url }}
-        run: |
-          nix build --no-write-lock-file --print-build-logs \
-            --override-input nixpkgs "$NIXPKGS_URL" \
-            --out-link result-nixos .#packages.${{ matrix.system }}.default
-
       # Only the default branch publishes. PRs and other branches never receive
       # the write token, including PRs originating in this repository.
       - name: Publish runtime closure to Cachix
@@ -91,4 +62,4 @@ jobs:
           CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}
         run: |
           test -n "$CACHIX_AUTH_TOKEN" || { echo 'Set the CACHIX_AUTH_TOKEN repository secret.' >&2; exit 1; }
-          cachix push "$CACHIX_CACHE_NAME" "$(readlink -f result)" "$(readlink -f result-nixos)"
+          cachix push "$CACHIX_CACHE_NAME" "$(readlink -f result)"
