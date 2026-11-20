@@ -12,6 +12,8 @@
 //! card it is two windows: itself, and a [scrim](QuickSettings::scrim) under it that
 //! takes the press that closes it.
 
+mod bluetooth;
+
 use std::path::PathBuf;
 
 use shell_m3e::{
@@ -26,10 +28,10 @@ use shell_services::{
 };
 use shell_ui::{
     AlignItems, Anchor, Color, Element, Extent, Frame, Image, ImageFile, JustifyContent, Layer,
-    Margin, PointerEvent, PointerKind, Window, WindowId,
+    PointerEvent, PointerKind, Window, WindowId,
 };
 
-use crate::status::HEIGHT;
+use crate::{bar, power, status::HEIGHT};
 
 /// The panel.
 const WIDTH: f32 = 420.0;
@@ -90,8 +92,9 @@ const DISABLED: f32 = 0.38;
 
 /// How opaque the panel is: glass over the compositor's blur, as Android's shade is over
 /// the wallpaper. Tiles and tracks that are off are darker glass on it.
-const GLASS: f32 = 0.7;
-const TILE_GLASS: f32 = 0.72;
+const GLASS: f32 = 0.56;
+const TILE_GLASS: f32 = 0.48;
+const ACCENT_GLASS: f32 = 0.80;
 /// How far the glass takes on the theme's hue.
 const TINT: f32 = 0.35;
 
@@ -103,7 +106,7 @@ const HEIGHT_FULL: f32 = TOP_PADDING
     + 2.0 * TILE_HEIGHT
     + TILE_GAP
     + PADDING;
-const SURFACE_WIDTH: u32 = (WIDTH + 2.0 * SLACK) as u32;
+const SURFACE_WIDTH: u32 = (WIDTH + RIGHT + SLACK) as u32;
 const SURFACE_HEIGHT: u32 = (MARGIN + HEIGHT_FULL * 1.12) as u32;
 
 /// What the pointer is over.
@@ -112,6 +115,10 @@ mod target {
     pub const SLIDER: u32 = 41;
     pub const RESTART: u32 = 42;
     pub const POWER_OFF: u32 = 43;
+    pub const BLUETOOTH_ICON: u32 = 44;
+    pub const BACK: u32 = 45;
+    pub const BLUETOOTH_POWER: u32 = 46;
+    pub const DEVICES: u32 = 47;
     /// The first tile; the rest follow.
     pub const TILE: u32 = 50;
 }
@@ -147,6 +154,12 @@ pub enum Action {
     SetVolume(f32),
 }
 
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub enum Panel {
+    Settings,
+    Power,
+}
+
 pub struct QuickSettings {
     state: State,
     volume: Volume,
@@ -170,6 +183,12 @@ pub struct QuickSettings {
     /// The slider's level, 0–1.
     level: Spring,
     tiles: [Tile; TILES],
+    bluetooth: bluetooth::Menu,
+    panel_kind: Panel,
+    power_menu: power::Menu,
+    /// Fade-through progress between the tile grid and the Bluetooth page.
+    page: Spring,
+    query_id: u64,
 }
 
 /// One of the header's buttons, animated.
@@ -221,6 +240,11 @@ impl QuickSettings {
             slider: Touch::new(),
             volume_set: None,
             level: Spring::new(expressive::SPATIAL_FAST, volume.level.clamp(0.0, 1.0)),
+            bluetooth: bluetooth::Menu::default(),
+            panel_kind: Panel::Settings,
+            power_menu: power::Menu::default(),
+            page: Spring::new(expressive::EFFECTS_SLOW, 0.0),
+            query_id: 0,
             tiles: std::array::from_fn(|_| Tile {
                 touch: Touch::new(),
                 on: Spring::new(expressive::SPATIAL_FAST, 0.0),
@@ -228,9 +252,17 @@ impl QuickSettings {
         }
     }
 
-    /// Takes in the state as it is now.
-    pub fn set_state(&mut self, state: State) {
-        self.state = state;
+    pub fn begin_query(&mut self) -> (u64, bool) {
+        self.query_id += 1;
+        (self.query_id, self.is_open && self.page.target() == 1.0)
+    }
+
+    /// An older query can finish after a newer one, especially when BlueZ is slow.
+    pub fn set_state(&mut self, id: u64, state: State) {
+        if id == self.query_id {
+            self.state = state;
+            self.bluetooth.loading = false;
+        }
     }
 
     /// Takes in the time as it is now, for the date.
@@ -264,17 +296,25 @@ impl QuickSettings {
         self.is_open
     }
 
-    /// Opens the panel if it's closed and closes it if it's open.
-    pub fn toggle(&mut self) -> Vec<Action> {
-        if self.is_open {
+    /// A bar button toggles its own panel and replaces any other panel.
+    pub fn toggle(&mut self, kind: Panel) -> Vec<Action> {
+        if self.is_open && self.panel_kind == kind {
             self.close();
             return Vec::new();
         }
+        self.panel_kind = kind;
+        self.armed = None;
+        self.power_menu = power::Menu::default();
+        self.page.snap(0.0);
+        self.bluetooth = bluetooth::Menu::default();
         self.is_open = true;
         self.open.set_target(1.0);
-        self.uptime = uptime();
         // A panel still closing is opened again where it is.
-        let mut actions = vec![Action::Query];
+        let mut actions = Vec::new();
+        if kind == Panel::Settings {
+            self.uptime = uptime();
+            actions.push(Action::Query);
+        }
         if self.scrim_window.is_none() {
             actions.push(Action::OpenScrim);
         }
@@ -307,15 +347,18 @@ impl QuickSettings {
             frame.close();
             self.panel_window = None;
         }
+        let right = match self.panel_kind {
+            Panel::Settings => RIGHT,
+            Panel::Power => bar::MARGIN,
+        };
         let root = Element::column()
             .align_items(AlignItems::END)
-            .padding_sides(MARGIN, SLACK, 0.0, SLACK)
+            .padding_sides(MARGIN, right, 0.0, SLACK)
             .child(self.sheet(frame, open));
         // Above the scrim, whichever of the two the compositor happens to map first.
         Window::layer_shell("quick-settings")
             .layer(Layer::Overlay)
             .anchor(Anchor::TOP | Anchor::RIGHT)
-            .margin(Margin::new(0, (RIGHT - SLACK) as i32, 0, 0))
             .width(Extent::Fixed(SURFACE_WIDTH))
             .height(Extent::Fixed(SURFACE_HEIGHT))
             .root(root)
@@ -325,29 +368,22 @@ impl QuickSettings {
     /// the left from under the group.
     fn sheet(&mut self, frame: &mut Frame, open: f32) -> Element {
         let theme = frame.theme();
-        let width = SEED + (WIDTH - SEED) * open;
-        let height = (HEIGHT_FULL * open).max(0.0);
+        let (full_width, full_height, seed) = match self.panel_kind {
+            Panel::Settings => (WIDTH, HEIGHT_FULL, SEED),
+            Panel::Power => (power::Menu::WIDTH, power::Menu::HEIGHT, HEIGHT),
+        };
+        let width = seed + (full_width - seed) * open;
+        let height = (full_height * open).max(0.0);
         let shown = (open * 4.0).clamp(0.0, 1.0);
         let radius = HEIGHT / 2.0 + (RADIUS - HEIGHT / 2.0) * open.clamp(0.0, 1.0);
 
-        let faces = self.faces();
-        let mut rows = Element::column().gap(TILE_GAP);
-        for row in [&[WIFI, BLUETOOTH, DND][..], &[AIRPLANE, MUTE, MIC, SUSPEND]] {
-            let mut tiles = Element::row().height(TILE_HEIGHT).gap(TILE_GAP);
-            for &index in row {
-                tiles = tiles.child(self.tile(frame, theme, index, &faces[index]));
-            }
-            rows = rows.child(tiles);
-        }
-        let content = Element::column()
-            .absolute(width - WIDTH, 0.0)
-            .width(WIDTH)
-            .padding_sides(TOP_PADDING, PADDING, PADDING, PADDING)
-            .child(self.header(frame, theme))
-            .child(Element::new().height(HEADER_GAP))
-            .child(self.volume_slider(frame, theme))
-            .child(Element::new().height(SECTION_GAP))
-            .child(rows);
+        let page = frame.animate(&mut self.page).clamp(0.0, 1.0);
+        // Fade through the sheet's glass, with only one page painted and hit-tested.
+        let content = match self.panel_kind {
+            Panel::Power => self.power_menu.view(frame, theme),
+            Panel::Settings if page < 0.5 => self.overview(frame, theme),
+            Panel::Settings => self.bluetooth.view(frame, theme, &self.state),
+        };
         Element::new()
             .size(width, height)
             .shrink(0.0)
@@ -359,7 +395,27 @@ impl QuickSettings {
             .corner_radius(radius)
             .clip()
             .target(target::PANEL)
-            .child(content)
+            .child(content.absolute(width - full_width, 0.0).opacity((2.0 * page - 1.0).abs()))
+    }
+
+    fn overview(&mut self, frame: &mut Frame, theme: &Theme) -> Element {
+        let faces = self.faces();
+        let mut rows = Element::column().gap(TILE_GAP);
+        for row in [&[WIFI, BLUETOOTH, DND][..], &[AIRPLANE, MUTE, MIC, SUSPEND]] {
+            let mut tiles = Element::row().height(TILE_HEIGHT).gap(TILE_GAP);
+            for &index in row {
+                tiles = tiles.child(self.tile(frame, theme, index, &faces[index]));
+            }
+            rows = rows.child(tiles);
+        }
+        Element::column()
+            .width(WIDTH)
+            .padding_sides(TOP_PADDING, PADDING, PADDING, PADDING)
+            .child(self.header(frame, theme))
+            .child(Element::new().height(HEADER_GAP))
+            .child(self.volume_slider(frame, theme))
+            .child(Element::new().height(SECTION_GAP))
+            .child(rows)
     }
 
     /// Who's logged in: their picture, their name, and under it the date and how long the
@@ -377,7 +433,7 @@ impl QuickSettings {
                 .center()
                 .size(AVATAR, AVATAR)
                 .shrink(0.0)
-                .background(theme.primary)
+                .background(theme.primary.scaled(ACCENT_GLASS))
                 .corner_radius(AVATAR / 2.0)
                 .child(label(&initial(&self.user), 22.0, 700, theme.on_primary)),
         };
@@ -424,7 +480,7 @@ impl QuickSettings {
             .center()
             .size(SESSION_BUTTON, SESSION_BUTTON)
             .shrink(0.0)
-            .background(tile_glass(theme).lerp(theme.error, amount))
+            .background(tile_glass(theme).lerp(theme.error.scaled(ACCENT_GLASS), amount))
             .corner_radius(radius.clamp(0.0, SESSION_BUTTON / 2.0))
             .clip()
             .target(id)
@@ -534,7 +590,7 @@ impl QuickSettings {
         let active = (center - handle / 2.0 - HANDLE_GAP).max(0.0);
         let rest = (center + handle / 2.0 + HANDLE_GAP).min(INNER);
         let top = (SLIDER_HEIGHT - TRACK) / 2.0;
-        let fill = if muted { theme.outline } else { theme.primary };
+        let fill = if muted { theme.outline } else { theme.primary }.scaled(ACCENT_GLASS);
 
         let icon = match level {
             _ if muted => "volume_off",
@@ -594,20 +650,23 @@ impl QuickSettings {
         let tile = &mut self.tiles[index];
         tile.on.set_target(if face.on == Some(true) { 1.0 } else { 0.0 });
         let on = frame.animate(&mut tile.on);
-        let touched =
-            if face.on.is_some() { tile.touch.animate(frame) } else { Touched::default() };
+        let touched = if face.on.is_some() || face.toggle {
+            tile.touch.animate(frame)
+        } else {
+            Touched::default()
+        };
         let amount = on.clamp(0.0, 1.0);
         let strength = if face.on.is_some() { 1.0 } else { DISABLED };
         let pressed = touched.press.clamp(0.0, 1.0);
 
-        // A tile with a toggle of its own stays quiet, and its toggle says how it stands.
-        let (body, body_on) = if face.toggle { (0.0, 0.0) } else { (amount, on) };
+        // A tile with a toggle of its own keeps the active color on the toggle.
+        let body = if face.toggle { 0.0 } else { amount };
         let off = tile_glass(theme);
-        let fill = off.lerp(theme.primary, body);
+        let fill = off.lerp(theme.primary.scaled(ACCENT_GLASS), body);
         let content = theme.on_surface.lerp(theme.on_primary, body).scaled(strength);
         let quiet = theme.on_surface_variant.lerp(theme.on_primary, body).scaled(strength);
         // The corners follow the spring, overshoot and all, and square off under a press.
-        let rest = TILE_HEIGHT / 2.0 + (TILE_ON_RADIUS - TILE_HEIGHT / 2.0) * body_on;
+        let rest = TILE_HEIGHT / 2.0 + (TILE_ON_RADIUS - TILE_HEIGHT / 2.0) * on;
         let radius = (rest + (TILE_PRESSED_RADIUS - rest) * pressed).clamp(0.0, TILE_HEIGHT / 2.0);
         let width = if face.wide { TILE_WIDE } else { TILE_SMALL };
 
@@ -624,7 +683,7 @@ impl QuickSettings {
                     .size(width, TILE_HEIGHT)
                     .background(content.scaled(state_layer(touched))),
             );
-        if face.on.is_some() {
+        if face.on.is_some() || face.toggle {
             element = element.target(target::TILE + index as u32);
         }
         let glyph = |color: Color| {
@@ -638,12 +697,15 @@ impl QuickSettings {
         slot = if face.toggle {
             let radius = SLOT / 2.0 + (SLOT_ON_RADIUS - SLOT / 2.0) * on;
             let radius = radius + (10.0 - radius) * pressed;
-            let color = theme.on_surface.lerp(theme.on_primary, amount).scaled(strength);
-            slot.background(
-                theme.surface_container_highest.lerp(theme.primary, amount).scaled(strength),
-            )
-            .corner_radius(radius.clamp(0.0, SLOT / 2.0))
-            .child(glyph(color))
+            let color = theme.on_primary_container.lerp(theme.on_primary, amount).scaled(strength);
+            let fill = theme
+                .primary_container
+                .scaled(TILE_GLASS)
+                .lerp(theme.primary.scaled(ACCENT_GLASS), amount);
+            slot.target(target::BLUETOOTH_ICON)
+                .background(fill.scaled(strength))
+                .corner_radius(radius.clamp(0.0, SLOT / 2.0))
+                .child(glyph(color))
         } else {
             slot.child(glyph(content))
         };
@@ -667,7 +729,48 @@ impl QuickSettings {
             }
             return Vec::new();
         };
+        if !self.is_open {
+            return Vec::new();
+        }
+        if self.panel_kind == Panel::Power {
+            if let Some(switch) = self.power_menu.event(id, event.kind) {
+                self.close();
+                return vec![Action::Switch(switch)];
+            }
+            return Vec::new();
+        }
+        let click = event.kind == PointerKind::Click;
+        if self.page.target() == 1.0 {
+            match id {
+                target::BACK => {
+                    self.bluetooth.back.handle(event.kind);
+                    if click {
+                        self.page.set_target(0.0);
+                    }
+                }
+                target::BLUETOOTH_POWER => {
+                    self.bluetooth.power.handle(event.kind);
+                    if click {
+                        self.bluetooth.loading = self.state.bluetooth == Some(false);
+                        self.state.connected_devices = None;
+                        return self.switch(BLUETOOTH).map(Action::Switch).into_iter().collect();
+                    }
+                }
+                target::DEVICES => self.bluetooth.scroll(event.kind, &self.state),
+                _ => {}
+            }
+            return Vec::new();
+        }
         match id {
+            target::BLUETOOTH_ICON => {
+                if self.state.bluetooth.is_some() {
+                    self.tiles[BLUETOOTH].touch.handle(event.kind);
+                    if click {
+                        return self.switch(BLUETOOTH).map(Action::Switch).into_iter().collect();
+                    }
+                }
+                Vec::new()
+            }
             target::SLIDER => {
                 self.slider.handle(event.kind);
                 match event.kind {
@@ -716,6 +819,14 @@ impl QuickSettings {
                 if event.kind != PointerKind::Click {
                     return Vec::new();
                 }
+                if index == BLUETOOTH {
+                    self.armed = None;
+                    self.bluetooth = bluetooth::Menu::default();
+                    self.bluetooth.loading = true;
+                    self.tiles[index].touch = Touch::new();
+                    self.page.set_target(1.0);
+                    return vec![Action::Query];
+                }
                 self.switch(index).map(Action::Switch).into_iter().collect()
             }
             _ => Vec::new(),
@@ -737,6 +848,7 @@ impl QuickSettings {
             }
             BLUETOOTH => {
                 let on = !state.bluetooth?;
+                self.query_id += 1;
                 state.bluetooth = Some(on);
                 Switch::Bluetooth(on)
             }
@@ -832,7 +944,7 @@ fn span(seconds: u64) -> String {
 }
 
 /// What tiles and tracks that are off are made of: darker glass than the panel's.
-fn tile_glass(theme: &Theme) -> Color {
+pub(crate) fn tile_glass(theme: &Theme) -> Color {
     theme.surface_container_lowest.lerp(theme.primary_container, TINT / 2.0).scaled(TILE_GLASS)
 }
 
@@ -847,12 +959,12 @@ fn date(time: Time) -> String {
 }
 
 /// A state layer's opacity: Material's 8% under the pointer and 10% more when pressed.
-fn state_layer(touched: Touched) -> f32 {
+pub(crate) fn state_layer(touched: Touched) -> f32 {
     0.08 * touched.hover.clamp(0.0, 1.0) + 0.10 * touched.press.clamp(0.0, 1.0)
 }
 
 /// A line of type that ends in an ellipsis if there isn't room for it.
-fn label(text: &str, size: f32, weight: u16, color: Color) -> Element {
+pub(crate) fn label(text: &str, size: f32, weight: u16, color: Color) -> Element {
     Element::text(text).ellipsis(true).font_size(size).font_weight(weight).text_color(color)
 }
 
@@ -862,7 +974,7 @@ mod tests {
 
     fn panel(state: State) -> QuickSettings {
         let mut panel = QuickSettings::new(Volume { level: 0.5, muted: false }, Time::default());
-        panel.set_state(state);
+        panel.set_state(0, state);
         panel
     }
 
@@ -878,12 +990,19 @@ mod tests {
             },
             State { wifi: Some(false), ..State::default() },
         ];
-        let sliders = ["volume_off", "volume_mute", "volume_down", "volume_up"];
+        let controls = [
+            "volume_off",
+            "volume_mute",
+            "volume_down",
+            "volume_up",
+            "arrow_back",
+            "bluetooth_connected",
+        ];
         for state in states {
             for muted in [false, true] {
                 let mut panel = panel(state.clone());
                 panel.volume.muted = muted;
-                for name in panel.faces().iter().map(|face| face.icon).chain(sliders) {
+                for name in panel.faces().iter().map(|face| face.icon).chain(controls) {
                     assert!(shell_m3e::icons::font().contains(name), "{name}");
                 }
             }
@@ -918,11 +1037,77 @@ mod tests {
     }
 
     #[test]
+    fn bluetooth_body_navigates_and_only_the_power_controls_switch() {
+        let mut panel = panel(State { bluetooth: Some(false), ..State::default() });
+        panel.toggle(Panel::Settings);
+        let click = |target| PointerEvent {
+            target: Some(target),
+            kind: PointerKind::Click,
+            x: 1.0,
+            y: 1.0,
+            width: 48.0,
+            height: 48.0,
+        };
+        let body = target::TILE + BLUETOOTH as u32;
+        assert_eq!(
+            panel.event(click(target::BLUETOOTH_ICON)),
+            [Action::Switch(Switch::Bluetooth(true))]
+        );
+        assert_eq!(panel.page.target(), 0.0);
+        assert_eq!(panel.event(click(body)), [Action::Query]);
+        assert_eq!(panel.page.target(), 1.0);
+        assert_eq!(panel.state.bluetooth, Some(true));
+        assert!(panel.event(click(target::RESTART)).is_empty());
+        assert_eq!(panel.armed, None);
+        assert_eq!(
+            panel.event(click(target::BLUETOOTH_POWER)),
+            [Action::Switch(Switch::Bluetooth(false))]
+        );
+        assert!(panel.event(click(target::BACK)).is_empty());
+        assert_eq!(panel.page.target(), 0.0);
+        assert!(panel.is_open());
+        panel.event(click(body));
+        panel.close();
+        panel.toggle(Panel::Settings);
+        assert_eq!(panel.page.value(), 0.0);
+    }
+
+    #[test]
+    fn power_menu_can_replace_settings_and_dismiss_without_a_command() {
+        let mut panel = panel(State::default());
+        assert_eq!(panel.toggle(Panel::Power), [Action::OpenScrim, Action::OpenPanel]);
+        assert!(panel.toggle(Panel::Power).is_empty());
+        assert!(!panel.is_open());
+        panel.toggle(Panel::Settings);
+        assert!(!panel.toggle(Panel::Power).contains(&Action::Query));
+        let click = PointerEvent {
+            target: Some(target::RESTART),
+            kind: PointerKind::Click,
+            x: 0.0,
+            y: 0.0,
+            width: 0.0,
+            height: 0.0,
+        };
+        assert!(panel.event(click).is_empty());
+        assert_eq!(panel.armed, None);
+        assert!(panel.is_open());
+        assert!(
+            panel
+                .event(PointerEvent { target: None, kind: PointerKind::Press, ..click })
+                .is_empty()
+        );
+        assert!(!panel.is_open());
+    }
+
+    #[test]
     fn opening_asks_for_the_state_and_both_windows() {
         let mut panel = panel(State::default());
-        assert_eq!(panel.toggle(), [Action::Query, Action::OpenScrim, Action::OpenPanel]);
+        assert_eq!(
+            panel.toggle(Panel::Settings),
+            [Action::Query, Action::OpenScrim, Action::OpenPanel]
+        );
         assert!(panel.is_open());
-        assert!(panel.toggle().is_empty());
+        assert!(panel.toggle(Panel::Settings).is_empty());
         assert!(!panel.is_open());
     }
 }

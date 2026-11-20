@@ -171,12 +171,17 @@ fn run() -> Result<(), Box<dyn Error>> {
         if let Some(change) = volume {
             audio::change_volume(ui.loop_handle(), change);
         }
-        // A click on the status group opens the quick settings, or closes them. Only
-        // one of the panel and the media card is open at a time.
-        if status::clicked(&event) {
+        let panel = if b.borrow_mut().power.pointer_event(event) {
+            Some(quick::Panel::Power)
+        } else if status::clicked(&event) {
+            Some(quick::Panel::Settings)
+        } else {
+            None
+        };
+        if let Some(panel) = panel {
             let actions = {
                 let mut bar = b.borrow_mut();
-                let actions = bar.quick.toggle();
+                let actions = bar.quick.toggle(panel);
                 if bar.quick.is_open() {
                     bar.media.dismiss();
                     bar.tray.close_menu();
@@ -448,8 +453,9 @@ fn perform_tray(
 /// Finds out how what the quick settings switch stands, and shows it.
 fn query_quick(ui: &mut Ui, bar: &SharedBar, bar_id: WindowId) {
     let bar = Rc::clone(bar);
-    quick_settings::query(ui.loop_handle(), move |ui, state| {
-        bar.borrow_mut().quick.set_state(state);
+    let (id, include_devices) = bar.borrow_mut().quick.begin_query();
+    quick_settings::query(ui.loop_handle(), include_devices, move |ui, state| {
+        bar.borrow_mut().quick.set_state(id, state);
         refresh(ui, &bar, bar_id);
     });
 }

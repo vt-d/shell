@@ -104,7 +104,7 @@ impl Layout {
 
     fn build(root: &Element, spare: &mut Spare) -> Self {
         let mut tree = TaffyTree::new();
-        let root_id = insert(&mut tree, root, &ResolvedTextStyle::default(), spare);
+        let root_id = insert(&mut tree, root, &ResolvedTextStyle::default(), 1.0, spare);
         Self { tree, root: root_id, root_style: taffy_style(&root.style), computed_for: None }
     }
 
@@ -298,7 +298,7 @@ fn intersection(a: Rect, b: Rect) -> Rect {
 impl Text {
     /// The text for `content` in `style`: one of the `spare` if any is the same, else
     /// shaped anew.
-    fn new(content: &str, style: &ResolvedTextStyle, spare: &mut Spare) -> Self {
+    fn new(content: &str, style: &ResolvedTextStyle, color: Color, spare: &mut Spare) -> Self {
         let key = TextKey {
             content: content.to_owned(),
             size: style.size.to_bits(),
@@ -310,7 +310,7 @@ impl Text {
             ellipsis: style.ellipsis,
         };
         if let Some(mut text) = spare.get_mut(&key).and_then(Vec::pop) {
-            text.color = style.color;
+            text.color = color;
             return text;
         }
         let mut buffer = Buffer::new_empty(Metrics::relative(style.size, style.line_height));
@@ -332,7 +332,7 @@ impl Text {
                 cosmic_text::Style::Normal
             });
         buffer.set_text(content, &attrs, Shaping::Advanced, None);
-        Self { key, buffer, color: style.color, height: 0.0, wrapped_to: None, extents: Vec::new() }
+        Self { key, buffer, color, height: 0.0, wrapped_to: None, extents: Vec::new() }
     }
 
     fn measure(
@@ -430,29 +430,62 @@ fn insert(
     tree: &mut TaffyTree<Node>,
     element: &Element,
     inherited: &ResolvedTextStyle,
+    parent_opacity: f32,
     spare: &mut Spare,
 ) -> NodeId {
+    let opacity = parent_opacity * element.opacity.unwrap_or(1.0);
+    let fade = |color: Color| color.with_alpha(color.a * opacity);
     let text_style = inherited.inherit(&element.text_style);
+    let ink = fade(text_style.color);
     let node = Node {
-        background: element.background,
+        background: element.background.map(fade),
         corner_radii: element.corner_radii,
         shape: element.shape,
         wave: element.wave,
         clip: element.clip,
         target: element.target,
         offset: element.offset,
-        text: element.text.as_deref().map(|content| Text::new(content, &text_style, spare)),
-        symbol: element.symbol.map(|symbol| (symbol, text_style.color)),
-        image: element.image.map(|image| (image, text_style.color)),
+        text: element.text.as_deref().map(|content| Text::new(content, &text_style, ink, spare)),
+        symbol: element.symbol.map(|symbol| (symbol, ink)),
+        image: element
+            .image
+            .map(|image| (image.opacity(image.opacity * opacity), text_style.color)),
     };
     let id = if node.text.is_some() || node.symbol.is_some() || node.image.is_some() {
         tree.new_leaf(taffy_style(&element.style))
     } else {
         let children: Vec<NodeId> =
-            element.children.iter().map(|c| insert(tree, c, &text_style, spare)).collect();
+            element.children.iter().map(|c| insert(tree, c, &text_style, opacity, spare)).collect();
         tree.new_with_children(taffy_style(&element.style), &children)
     }
     .expect("taffy insert");
     tree.set_node_context(id, Some(node)).expect("node exists");
     id
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use shell_render::ImageFile;
+
+    #[test]
+    fn fading_a_page_preserves_its_glass_and_updates_cached_text_and_images() {
+        let page = |opacity| {
+            Element::column()
+                .opacity(opacity)
+                .background(Color::BLACK.with_alpha(0.5))
+                .text_color(Color::WHITE.with_alpha(0.8))
+                .child(Element::text("Bluetooth"))
+                .child(Element::image(Image::new(ImageFile::new("avatar.png"), 48.0).opacity(0.6)))
+        };
+        let mut layout = Layout::new(&page(1.0));
+        layout.rebuild(&page(0.5));
+        let root = layout.tree.get_node_context(layout.root).unwrap();
+        assert_eq!(root.background.unwrap().a, 0.25);
+        let children = layout.tree.children(layout.root).unwrap();
+        let label = layout.tree.get_node_context(children[0]).unwrap();
+        assert_eq!(label.text.as_ref().unwrap().color.a, 0.4);
+        let avatar = layout.tree.get_node_context(children[1]).unwrap();
+        assert_eq!(avatar.image.unwrap().0.opacity, 0.3);
+    }
 }

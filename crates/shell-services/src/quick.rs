@@ -25,6 +25,13 @@ echo "ssid $(nmcli -t -f TYPE,NAME connection show --active 2>/dev/null \
     | grep '^802-11-wireless:' | head -n 1 | cut -d: -f2-)"
 echo "modes $(makoctl mode 2>/dev/null | tr '\n' ' ')"
 echo "mic $(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ 2>/dev/null)"
+if [ "$1" = devices ]; then
+    if devices=$(timeout 3 bluetoothctl devices Connected 2>/dev/null) &&
+       [ "$devices" != 'No default controller available' ]; then
+        echo devices
+        printf '%s\n' "$devices"
+    fi
+fi
 "#;
 
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
@@ -35,6 +42,8 @@ pub struct State {
     pub ssid: Option<String>,
     /// As `wifi`, for Bluetooth.
     pub bluetooth: Option<bool>,
+    /// Connected names from BlueZ, when requested and available.
+    pub connected_devices: Option<Vec<String>>,
     /// Whether notifications are held back.
     pub dnd: bool,
     /// Whether the microphone is muted; `None` if there's none.
@@ -50,7 +59,22 @@ impl State {
 
     fn parse(output: &str) -> Self {
         let mut state = Self::default();
-        for line in output.lines() {
+        // BlueZ output follows the radio snapshot. A device alias is display text.
+        let mut sections = output.splitn(2, "\ndevices\n");
+        let settings = sections.next().unwrap_or_default();
+        if let Some(devices) = sections.next() {
+            state.connected_devices = Some(
+                devices
+                    .lines()
+                    .filter_map(|line| {
+                        let device = line.strip_prefix("Device ")?;
+                        let (address, name) = device.split_once(' ').unwrap_or((device, ""));
+                        Some(if name.trim().is_empty() { address } else { name.trim() }.to_owned())
+                    })
+                    .collect(),
+            );
+        }
+        for line in settings.lines() {
             let (kind, rest) = line.split_once(' ').unwrap_or((line, ""));
             let rest = rest.trim();
             match kind {
@@ -85,12 +109,17 @@ impl State {
 /// Finds the state out in the background and calls `on_done` with it.
 pub fn query<D: 'static>(
     handle: &LoopHandle<'static, D>,
+    include_devices: bool,
     on_done: impl FnOnce(&mut D, State) + 'static,
 ) {
-    let result = process::run(handle, "sh", &["-c", QUERY], |data, result| match result {
-        Ok(output) => on_done(data, State::parse(&String::from_utf8_lossy(&output))),
-        Err(err) => eprintln!("quick settings: {err}"),
-    });
+    let detail = if include_devices { "devices" } else { "" };
+    let result =
+        process::run(handle, "sh", &["-c", QUERY, "quick-settings", detail], |data, result| {
+            match result {
+                Ok(output) => on_done(data, State::parse(&String::from_utf8_lossy(&output))),
+                Err(err) => eprintln!("quick settings: {err}"),
+            }
+        });
     if let Err(err) = result {
         eprintln!("quick settings: {err}");
     }
@@ -163,11 +192,26 @@ mod tests {
                 wifi: Some(true),
                 ssid: Some("home:net".to_owned()),
                 bluetooth: Some(false),
+                connected_devices: None,
                 dnd: true,
                 mic_muted: Some(true),
             }
         );
         assert!(!state.airplane());
+    }
+
+    #[test]
+    fn reads_connected_names_and_distinguishes_an_empty_list_from_a_failed_query() {
+        let state = State::parse(
+            "radio bluetooth 0\ndevices\nDevice 00:11:22:33:44:55 Desk speaker\nDevice 11:22:33:44:55:66\nradio bluetooth 1\n",
+        );
+        assert_eq!(
+            state.connected_devices,
+            Some(vec!["Desk speaker".into(), "11:22:33:44:55:66".into()])
+        );
+        assert_eq!(state.bluetooth, Some(true));
+        assert_eq!(State::parse("mic \ndevices\n\n").connected_devices, Some(vec![]));
+        assert_eq!(State::parse("mic \n").connected_devices, None);
     }
 
     #[test]

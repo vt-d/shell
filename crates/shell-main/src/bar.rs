@@ -13,7 +13,7 @@ use crate::{
 pub const HEIGHT: u32 = 56;
 /// Space between the bar's left and right edges and its content: Material's docked
 /// toolbar leading and trailing space.
-const MARGIN: f32 = 16.0;
+pub(crate) const MARGIN: f32 = 16.0;
 /// How opaque the bar's background is: slightly see-through, so what's behind shows
 /// through the compositor's blur (a Hyprland layer rule for the `bar` namespace).
 pub const OPACITY: f32 = 0.8;

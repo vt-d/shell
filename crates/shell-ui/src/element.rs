@@ -156,6 +156,7 @@ pub(crate) struct TextStyle {
 #[derive(Clone, Debug, Default)]
 pub struct Element {
     pub(crate) style: Style,
+    pub(crate) opacity: Option<f32>,
     pub(crate) background: Option<Color>,
     pub(crate) corner_radii: [f32; 4],
     pub(crate) shape: Option<Shape>,
@@ -341,6 +342,12 @@ impl Element {
 
     pub fn background(mut self, color: Color) -> Self {
         self.background = Some(color);
+        self
+    }
+
+    /// Multiplies the paint opacity of every fill, glyph and image in this subtree.
+    pub fn opacity(mut self, opacity: f32) -> Self {
+        self.opacity = Some(opacity.clamp(0.0, 1.0));
         self
     }
 

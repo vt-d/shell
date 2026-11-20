@@ -34,6 +34,7 @@
           coreutils
           gnugrep
           curl
+          bluez
           networkmanager
           wireplumber
           pipewire
